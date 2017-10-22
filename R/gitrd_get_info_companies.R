@@ -1,7 +1,11 @@
 #' Reads up to date information about Bovespa companies from a github file
 #'
 #' A csv file with information about available companies and time periods is downloaded from github and read.
-#' This file is updated periodically and manually by the author.
+#' This file is updated periodically and manually by the author. When run for the first time in a R session, a .RDATA file
+#' containing the output of the function is saved in tempdir() for caching.
+#'
+#' @param type.data A string that sets the type of information to be returned ('companies' or 'companies_files').
+#' If 'companies', it will return a dataframe with several information about companies, but without download links.
 #'
 #' @return A dataframe with several information about Bovespa companies
 #' @export
@@ -12,7 +16,22 @@
 #' df.info <- gitrd.get.info.companies()
 #' str(df.info)
 #' }
-gitrd.get.info.companies <- function() {
+gitrd.get.info.companies <- function(type.data = 'companies_files') {
+
+  # error checking
+  possible.values <- c('companies_files', 'companies')
+  if ( !(type.data %in% possible.values) ) {
+    stop('Input type.data should be one of:\n\n', paste0(possible.values, collapse = '\n'))
+  }
+
+  # check if cache file exists
+  my.f.rdata <- file.path(tempdir(),paste0('df_info_', type.data, '.RData') )
+
+  if (file.exists(my.f.rdata)) {
+    cat('Found cache file. Loading data..')
+    load(my.f.rdata)
+    return(df.info)
+  }
 
   # get data from github
 
@@ -25,6 +44,7 @@ gitrd.get.info.companies <- function() {
     main.sector = readr::col_character(),
     sub.sector = readr::col_character(),
     segment = readr::col_character(),
+    tickers = readr::col_character(),
     id.file = readr::col_integer(),
     dl.link = readr::col_character(),
     id.date = readr::col_date(),
@@ -48,5 +68,32 @@ gitrd.get.info.companies <- function() {
   my.last.update <- readLines('https://raw.githubusercontent.com/msperlin/GetitrData_auxiliary/master/LastUpdate.txt')
   cat('\nLast file update: ', my.last.update)
 
+  if (type.data == 'companies') {
+
+    my.cols <- my.cols <- c("name.company","id.company", "situation",
+                            "main.sector", "sub.sector", "segment", "tickers")
+    df.info.agg <- unique(df.info[, my.cols])
+
+    my.fun <- function(df) {
+      return(c(min(df$id.date), max(df$id.date)))
+    }
+    out <- by(data = df.info, INDICES = df.info$name.company, FUN = my.fun)
+
+    df.temp <- data.frame(name.company = names(out),
+               first.date = sapply(out, FUN = function(x) as.character(x[1])),
+               last.date = sapply(out, FUN = function(x) as.character(x[2])),
+    stringsAsFactors = F )
+
+    df.info.agg <- merge(df.info.agg, df.temp, by = 'name.company')
+    df.info.agg$first.date <- as.Date(df.info.agg$first.date)
+    df.info.agg$last.date <- as.Date(df.info.agg$last.date)
+
+    df.info <- df.info.agg
+  }
+
+  cat('\nCaching RDATA into tempdir()')
+  save('df.info', file = my.f.rdata)
+
   return(df.info)
+
 }
