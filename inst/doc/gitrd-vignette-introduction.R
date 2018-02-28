@@ -11,7 +11,6 @@ library(tibble)
 
 gitrd.search.company('petrobras')
 
-
 ## ------------------------------------------------------------------------
 df.info <- gitrd.get.info.companies(type.data = 'companies')
 

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Marcelo Perlin" />
 
-<meta name="date" content="2017-10-21" />
+<meta name="date" content="2018-02-28" />
 
 <title>Using GetITRData to obtain quarterly financial reports from Bovespa</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Using GetITRData to obtain quarterly financial reports from Bovespa</h1>
 <h4 class="author"><em>Marcelo Perlin</em></h4>
-<h4 class="date"><em>2017-10-21</em></h4>
+<h4 class="date"><em>2018-02-28</em></h4>
 
 
 
@@ -94,32 +94,34 @@ devtools<span class="op">::</span><span class="kw">install_github</span>(<span c
 <span class="kw">gitrd.search.company</span>(<span class="st">'petrobras'</span>)</code></pre></div>
 <pre><code>## 
 ## Reading info file from github
-## Found 33351 lines for 626 companies  [Actives =  474  Inactives =  152 ]
+## Found 44338 lines for 690 companies  [Actives =  518  Inactives =  173 ]
 ## Last file update:  2017-10-19
 ## Caching RDATA into tempdir()
 ## 
-## Found 1 companies:
-## PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS | situation = ATIVO | first date = 1998-09-30 | last date - 2017-06-30</code></pre>
+## Found 2 companies:
+## PETROBRAS DISTRIBUIDORA SA             | situation = ATIVO | first date = 2016-12-31 | last date - 2017-12-31
+## PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS | situation = ATIVO | first date = 1998-09-30 | last date - 2017-12-31</code></pre>
 <p>Its official name in Bovespa records is <code>PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS</code>. Data for quarterly and annual statements are available from 1998 to 2017. The situation of the company, active or canceled, is also given. This helps verifying the availability of data.</p>
 <p>The content of all available quarterly statements can be accessed with function <code>gitrd.get.info.companies</code>. It will read and parse a .csv file from my <a href="https://github.com/msperlin/GetITRData_auxiliary">github repository</a>. This will be periodically updated for new quarterly statements. Let’s try it out:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df.info &lt;-<span class="st"> </span><span class="kw">gitrd.get.info.companies</span>(<span class="dt">type.data =</span> <span class="st">'companies'</span>)</code></pre></div>
 <pre><code>## 
 ## Reading info file from github
-## Found 33351 lines for 626 companies  [Actives =  474  Inactives =  152 ]
+## Found 44338 lines for 690 companies  [Actives =  518  Inactives =  173 ]
 ## Last file update:  2017-10-19
 ## Caching RDATA into tempdir()</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">glimpse</span>(df.info)</code></pre></div>
-<pre><code>## Observations: 627
-## Variables: 9
-## $ name.company &lt;chr&gt; &quot;521 PARTICIPAÇOES S.A. - EM LIQUIDAÇÃO EXTRAJUDI...
-## $ id.company   &lt;int&gt; 16330, 16284, 21725, 19313, 18350, 18970, 18104, ...
-## $ situation    &lt;chr&gt; &quot;ATIVO&quot;, &quot;ATIVO&quot;, &quot;ATIVO&quot;, &quot;ATIVO&quot;, &quot;CANCELADA&quot;, ...
-## $ main.sector  &lt;chr&gt; NA, &quot;Financeiro e Outros&quot;, &quot;Consumo não Cíclico&quot;,...
-## $ sub.sector   &lt;chr&gt; NA, &quot;Outros&quot;, &quot;Produtos de Uso Pessoal e de Limpe...
-## $ segment      &lt;chr&gt; NA, &quot;Outros&quot;, &quot;Produtos de Uso Pessoal&quot;, &quot;Energia...
-## $ tickers      &lt;chr&gt; NA, &quot;QVQP3B&quot;, NA, &quot;AELP3&quot;, NA, &quot;TIET11;TIET3;TIET...
-## $ first.date   &lt;date&gt; 1998-12-31, 2001-09-30, 2008-12-31, 2001-12-31, ...
-## $ last.date    &lt;date&gt; 2015-03-31, 2017-06-30, 2017-03-31, 2017-06-30, ...</code></pre>
+<pre><code>## Observations: 692
+## Variables: 10
+## $ name.company    &lt;chr&gt; &quot;521 PARTICIPAÇOES S.A. - EM LIQUIDAÇÃO EXTRAJ...
+## $ id.company      &lt;int&gt; 16330, 16284, 21725, 19313, 18350, 18970, 1810...
+## $ situation       &lt;chr&gt; &quot;ATIVO&quot;, &quot;ATIVO&quot;, &quot;ATIVO&quot;, &quot;ATIVO&quot;, &quot;CANCELADA...
+## $ listing.segment &lt;chr&gt; NA, &quot;Tradicional&quot;, &quot;Tradicional&quot;, &quot;Tradicional...
+## $ main.sector     &lt;chr&gt; NA, &quot;Financeiro e Outros&quot;, &quot;Saúde&quot;, &quot;Financeir...
+## $ sub.sector      &lt;chr&gt; NA, &quot;Outros&quot;, &quot;Serv.Méd.Hospit..Análises e Dia...
+## $ segment         &lt;chr&gt; NA, &quot;Outros&quot;, &quot;Serv.Méd.Hospit..Análises e Dia...
+## $ tickers         &lt;chr&gt; NA, &quot;QVQP3B&quot;, &quot;ADHM3&quot;, &quot;AELP3&quot;, NA, &quot;TIET11;TI...
+## $ first.date      &lt;date&gt; 1998-12-31, 2001-09-30, 2008-12-31, 2001-12-3...
+## $ last.date       &lt;date&gt; 2016-12-31, 2017-09-30, 2017-12-31, 2017-12-3...</code></pre>
 <p>This file includes several information that are gathered from Bovespa: names of companies, sectors, dates quarterly statements and, most importantly, the links to download the files. The resulting dataframe can be used to filter and gather information for large scale research such as downloading financial data for a specific sector.</p>
 <div id="downloading-financial-information-for-one-company" class="section level2">
 <h2>Downloading financial information for ONE company</h2>
@@ -138,41 +140,50 @@ df.reports &lt;-<span class="st"> </span><span class="kw">gitrd.GetITRData</span
 <pre><code>## Found cache file. Loading data..
 ## 
 ## Downloading data for 1 companies
-## Reach of financial reports: individual
+## Type of financial reports: individual
 ## Periodicy of financial reports: annual (dfp system)
 ## First Date: 2004-01-01
 ## Laste Date: 2006-01-01
 ## Inflation index: dollar
 ## 
-## Downloading dollar data using BETS   Done
+## Downloading inflation data
+##  Caching inflation RDATA into tempdir()  Done
 ## 
 ## 
 ## WARNING: For data before 2009, the cash flow statements are not available
 ## 
-## Inputs looks good! Downloading data:
+## Inputs looking good! Starting download of files:
+## 
 ## PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS
 ##  Available periods: 2005-12-31   2004-12-31
 ## 
 ## 
-## Processing PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS, Date = 2005-12-31 Downloading | Reading file
-## Processing PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS, Date = 2004-12-31 Downloading | Reading file</code></pre>
+## Processing PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS, Date = 2005-12-31
+##  Acessing dfp data | downloading file | reading file
+##  Acessing fre data
+##      No FRE file available..
+## Processing PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS, Date = 2004-12-31
+##  Acessing dfp data | downloading file | reading file
+##  Acessing fre data
+##      No FRE file available..</code></pre>
 <p>The resulting object is a <code>tibble</code>, a data.frame type of object that allows for list columns. Let’s have a look in its content:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">glimpse</span>(df.reports)</code></pre></div>
 <pre><code>## Observations: 1
-## Variables: 13
-## $ company.name      &lt;chr&gt; &quot;PETRÓLEO BRASILEIRO  S.A.  - PETROBRAS&quot;
-## $ company.code      &lt;int&gt; 9512
-## $ type.info         &lt;chr&gt; &quot;individual&quot;
-## $ min.date          &lt;date&gt; 2004-12-31
-## $ max.date          &lt;date&gt; 2005-12-31
-## $ n.periods         &lt;int&gt; 2
-## $ stock.holders     &lt;list&gt; [&lt;c(&quot;Bndes + Fps&quot;, &quot;Caixa Previdência Funci...
-## $ stock.composition &lt;list&gt; [&lt;c(&quot;Ordinárias&quot;, &quot;Preferenciais&quot;, &quot;Total&quot;)...
-## $ dividends.history &lt;list&gt; [&lt;c(&quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON...
-## $ fr.assets         &lt;list&gt; [&lt;# A tibble: 28 x 6,                      ...
-## $ fr.liabilities    &lt;list&gt; [&lt;# A tibble: 46 x 6,                      ...
-## $ fr.income         &lt;list&gt; [&lt;# A tibble: 48 x 6,                      ...
-## $ fr.cashflow       &lt;list&gt; [&lt;character(0), character(0), character(0),...</code></pre>
+## Variables: 14
+## $ company.name              &lt;chr&gt; &quot;PETRÓLEO BRASILEIRO  S.A.  - PETROB...
+## $ company.code              &lt;int&gt; 9512
+## $ type.info                 &lt;chr&gt; &quot;individual&quot;
+## $ min.date                  &lt;date&gt; 2004-12-31
+## $ max.date                  &lt;date&gt; 2005-12-31
+## $ n.periods                 &lt;int&gt; 2
+## $ current.stock.composition &lt;list&gt; [&lt;c(&quot;Ordinárias&quot;, &quot;Preferenciais&quot;, ...
+## $ dividends.history         &lt;list&gt; [&lt;c(&quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;...
+## $ fr.assets                 &lt;list&gt; [&lt;# A tibble: 28 x 6,    company.na...
+## $ fr.liabilities            &lt;list&gt; [&lt;# A tibble: 46 x 6,    company.na...
+## $ fr.income                 &lt;list&gt; [&lt;# A tibble: 48 x 6,    company.na...
+## $ fr.cashflow               &lt;list&gt; [&lt;character(0), character(0), chara...
+## $ history.stock.holders     &lt;list&gt; [&lt;&gt;]
+## $ history.capital           &lt;list&gt; [&lt;&gt;]</code></pre>
 <p>Object <code>df.reports</code> only has one row since we only asked for data of one company. The number of rows increases with the number of companies, as we will soon learn with the next example. All financial statements for the different years are available within <code>df.reports</code>. For example, the income statements for all desired years of PETROBRAS are:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df.income.long &lt;-<span class="st"> </span>df.reports<span class="op">$</span>fr.income[[<span class="dv">1</span>]]
 
@@ -184,7 +195,7 @@ df.reports &lt;-<span class="st"> </span><span class="kw">gitrd.GetITRData</span
 ## $ acc.number         &lt;chr&gt; &quot;3.01&quot;, &quot;3.02&quot;, &quot;3.03&quot;, &quot;3.04&quot;, &quot;3.05&quot;, &quot;3....
 ## $ acc.desc           &lt;chr&gt; &quot;Receita Bruta de Vendas e/ou Serviços&quot;, &quot;D...
 ## $ acc.value          &lt;int&gt; 143665730, -37843204, 105822526, -57512113,...
-## $ acc.value.infl.adj &lt;dbl&gt; 61377250.40, -16167472.98, 45209777.42, -24...</code></pre>
+## $ acc.value.infl.adj &lt;dbl&gt; 61398234.97, -16173000.56, 45225234.41, -24...</code></pre>
 <p>The resulting dataframe is in the long format, ready for processing. In the long format, financial statements of different quarters are stacked. In the wide format, we have the quarters as dates. If you want the wide format, which I believe is most common in financial analysis, you can use function <code>gitrd.convert.to.wide</code>. See an example next:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df.income.wide &lt;-<span class="st"> </span><span class="kw">gitrd.convert.to.wide</span>(df.income.long)
 
@@ -390,54 +401,71 @@ df.reports &lt;-<span class="st"> </span><span class="kw">gitrd.GetITRData</span
 <pre><code>## Found cache file. Loading data..
 ## 
 ## Downloading data for 5 companies
-## Reach of financial reports: individual
+## Type of financial reports: individual
 ## Periodicy of financial reports: annual (dfp system)
 ## First Date: 2008-01-01
 ## Laste Date: 2010-01-01
 ## Inflation index: dollar
 ## 
-## Downloading dollar data using BETS   Done
+## Downloading inflation data
+##  Found cache file. Loading data..    Done
 ## 
 ## 
-## WARNING: Cant find available dates for BRZ INVESTIMENTOS S/A
+## WARNING: Cant find available dates for BSI CAPITAL SECURITIZADORA S.A.
 ## WARNING: For data before 2009, the cash flow statements are not available
 ## 
-## Inputs looks good! Downloading data:
-## BRF S.A.
-##  Available periods: 2009-12-31   2008-12-31
-## KARSTEN SA
-##  Available periods: 2009-12-31   2008-12-31
-## ODONTOPREV S/A
-##  Available periods: 2009-12-31   2008-12-31
+## Inputs looking good! Starting download of files:
+## 
+## LIGA FUTEBOL SA
+##  Available periods: 
 ## ULTRAPAR PARTICIPAÇÕES SA
 ##  Available periods: 2009-12-31   2008-12-31
-## 
-## 
-## Processing BRF S.A., Date = 2009-12-31   Downloading | Reading file
-## Processing BRF S.A., Date = 2008-12-31   Downloading | Reading file
-## Processing KARSTEN SA, Date = 2009-12-31 Downloading | Reading file
-## Processing KARSTEN SA, Date = 2008-12-31 Downloading | Reading file
-## Processing ODONTOPREV S/A, Date = 2009-12-31 Downloading | Reading file
-## Processing ODONTOPREV S/A, Date = 2008-12-31 Downloading | Reading file
-## Processing ULTRAPAR PARTICIPAÇÕES SA, Date = 2009-12-31  Downloading | Reading file
-## Processing ULTRAPAR PARTICIPAÇÕES SA, Date = 2008-12-31  Downloading | Reading file</code></pre>
+## BROOKFIELD INCORPORAÇÕES S.A.
+##  Available periods: 2009-12-31   2008-12-31
+## OURINVEST SECURITIZADORA S.A.
+##  Available periods:</code></pre>
+<pre><code>## Warning in min.default(structure(numeric(0), class = &quot;Date&quot;), na.rm =
+## FALSE): no non-missing arguments to min; returning Inf</code></pre>
+<pre><code>## Warning in max.default(structure(numeric(0), class = &quot;Date&quot;), na.rm =
+## FALSE): no non-missing arguments to max; returning -Inf</code></pre>
+<pre><code>## 
+## Processing ULTRAPAR PARTICIPAÇÕES SA, Date = 2009-12-31
+##  Acessing dfp data | downloading file | reading file
+##  Acessing fre data | downloading file | reading file
+## Processing ULTRAPAR PARTICIPAÇÕES SA, Date = 2008-12-31
+##  Acessing dfp data | downloading file | reading file
+##  Acessing fre data
+##      No FRE file available..
+## Processing BROOKFIELD INCORPORAÇÕES S.A., Date = 2009-12-31
+##  Acessing dfp data | downloading file | reading file
+##  Acessing fre data | downloading file | reading file
+## Processing BROOKFIELD INCORPORAÇÕES S.A., Date = 2008-12-31
+##  Acessing dfp data | downloading file | reading file
+##  Acessing fre data
+##      No FRE file available..</code></pre>
+<pre><code>## Warning in min.default(structure(numeric(0), class = &quot;Date&quot;), na.rm =
+## FALSE): no non-missing arguments to min; returning Inf
+
+## Warning in min.default(structure(numeric(0), class = &quot;Date&quot;), na.rm =
+## FALSE): no non-missing arguments to max; returning -Inf</code></pre>
 <p>And now we can check the resulting <code>tibble</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">glimpse</span>(df.reports)</code></pre></div>
 <pre><code>## Observations: 4
-## Variables: 13
-## $ company.name      &lt;chr&gt; &quot;BRF S.A.&quot;, &quot;KARSTEN SA&quot;, &quot;ODONTOPREV S/A&quot;, ...
-## $ company.code      &lt;int&gt; 16292, 4146, 20125, 18465
-## $ type.info         &lt;chr&gt; &quot;individual&quot;, &quot;individual&quot;, &quot;individual&quot;, &quot;i...
-## $ min.date          &lt;date&gt; 2008-12-31, 2008-12-31, 2008-12-31, 2008-12-31
-## $ max.date          &lt;date&gt; 2009-12-31, 2009-12-31, 2009-12-31, 2009-12-31
-## $ n.periods         &lt;int&gt; 2, 2, 2, 2
-## $ stock.holders     &lt;list&gt; [&lt;c(&quot;Standard Life Aberdeen Plc&quot;, &quot;Petros -...
-## $ stock.composition &lt;list&gt; [&lt;c(&quot;Ordinárias&quot;, &quot;Preferenciais&quot;, &quot;Total&quot;)...
-## $ dividends.history &lt;list&gt; [&lt;c(&quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON...
-## $ fr.assets         &lt;list&gt; [&lt;# A tibble: 18 x 6,    company.name   ref...
-## $ fr.liabilities    &lt;list&gt; [&lt;# A tibble: 42 x 6,    company.name   ref...
-## $ fr.income         &lt;list&gt; [&lt;# A tibble: 52 x 6,    company.name   ref...
-## $ fr.cashflow       &lt;list&gt; [&lt;character(0), character(0), character(0),...</code></pre>
+## Variables: 14
+## $ company.name              &lt;chr&gt; &quot;LIGA FUTEBOL SA&quot;, &quot;ULTRAPAR PARTICI...
+## $ company.code              &lt;int&gt; NA, 18465, 20265, NA
+## $ type.info                 &lt;chr&gt; &quot;individual&quot;, &quot;individual&quot;, &quot;individ...
+## $ min.date                  &lt;date&gt; NA, 2008-12-31, 2008-12-31, NA
+## $ max.date                  &lt;date&gt; NA, 2009-12-31, 2009-12-31, NA
+## $ n.periods                 &lt;int&gt; 0, 2, 2, 0
+## $ current.stock.composition &lt;list&gt; [&lt;&gt;, &lt;c(&quot;Ordinárias&quot;, &quot;Preferenciai...
+## $ dividends.history         &lt;list&gt; [&lt;&gt;, &lt;c(&quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON&quot;, &quot;ON...
+## $ fr.assets                 &lt;list&gt; [&lt;&gt;, &lt;# A tibble: 18 x 6,    compan...
+## $ fr.liabilities            &lt;list&gt; [&lt;&gt;, &lt;# A tibble: 42 x 6,    compan...
+## $ fr.income                 &lt;list&gt; [&lt;&gt;, &lt;# A tibble: 48 x 6,    compan...
+## $ fr.cashflow               &lt;list&gt; [&lt;&gt;, &lt;character(0), character(0), c...
+## $ history.stock.holders     &lt;list&gt; [&lt;&gt;, &lt;c(&quot;ULTRAPAR PARTICIPAÇÕES SA&quot;...
+## $ history.capital           &lt;list&gt; [&lt;&gt;, &lt;ULTRAPAR PARTICIPAÇÕES SA, 20...</code></pre>
 <p>Every row of <code>df.reports</code> will provide information for one company. Metadata about the corresponding dataframes such as min/max dates is available in the first columns. Keeping a tabular structure facilitates the organization and future processing of all financial data. We can use tibble <code>df.reports</code> for creating other dataframes in the long format containing data for all companies. See next, where we create dataframes with the assets and liabilities of all companies:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df.assets &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="dt">what =</span> rbind, <span class="dt">args =</span> df.reports<span class="op">$</span>fr.assets)
 df.liabilities &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="dt">what =</span> rbind, <span class="dt">args =</span> df.reports<span class="op">$</span>fr.liabilities)
@@ -458,25 +486,21 @@ df.assets.liabilities &lt;-<span class="st"> </span><span class="kw">rbind</span
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Liq.Index =</span> acc.value[acc.number <span class="op">==</span><span class="st"> '1.01'</span>]<span class="op">/</span><span class="st"> </span>acc.value[acc.number <span class="op">==</span><span class="st"> '2.01'</span>])
 
 my.tab</code></pre></div>
-<pre><code>## # A tibble: 8 x 3
+<pre><code>## # A tibble: 4 x 3
 ## # Groups:   company.name [?]
-##                company.name   ref.date Liq.Index
-##                       &lt;chr&gt;     &lt;date&gt;     &lt;dbl&gt;
-## 1                  BRF S.A. 2008-12-31 0.8705760
-## 2                  BRF S.A. 2009-12-31 1.4471633
-## 3                KARSTEN SA 2008-12-31 0.8535343
-## 4                KARSTEN SA 2009-12-31 1.3657104
-## 5            ODONTOPREV S/A 2008-12-31 1.7151491
-## 6            ODONTOPREV S/A 2009-12-31 0.9576243
-## 7 ULTRAPAR PARTICIPAÇÕES SA 2008-12-31 0.6841688
-## 8 ULTRAPAR PARTICIPAÇÕES SA 2009-12-31 1.2383783</code></pre>
+##   company.name                  ref.date   Liq.Index
+##   &lt;chr&gt;                         &lt;date&gt;         &lt;dbl&gt;
+## 1 BROOKFIELD INCORPORAÇÕES S.A. 2008-12-31     0.482
+## 2 BROOKFIELD INCORPORAÇÕES S.A. 2009-12-31     4.41 
+## 3 ULTRAPAR PARTICIPAÇÕES SA     2008-12-31     0.684
+## 4 ULTRAPAR PARTICIPAÇÕES SA     2009-12-31     1.24</code></pre>
 <p>Now we can visualize the information using <code>ggplot2</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ggplot2)
 
 p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(my.tab, <span class="kw">aes</span>(<span class="dt">x =</span> ref.date, <span class="dt">y =</span> Liq.Index, <span class="dt">fill =</span> company.name)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">position =</span> <span class="st">'dodge'</span> )
 <span class="kw">print</span>(p)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 <p>As we can see, we could not find available data for all companies. Nonetheless, JPSP is the company with highest liquidity, being able to pay its short term debt with the current assets in all years. We can certainly do a lot more interesting studies based on this data set.</p>
 </div>
 <div id="exporting-financial-data" class="section level2">
